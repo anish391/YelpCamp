@@ -1,46 +1,98 @@
 var express = require('express');
 var app = express();
 var bodyParser = require("body-parser");
+var mongoose = require("mongoose");
+
+mongoose.connect("mongodb://localhost/yelp_camp");
 
 app.use(bodyParser.urlencoded({extended:true}));
 app.set("view engine", "ejs");
 
-var campgrounds = [
-    {name: "Salmon Creek", image: "https://www.jweekly.com/wp-content/uploads/2018/10/BAfireanniversary-rebuilding-crop-e1539620545679.jpg"},
-    {name: "Salmon Hill", image: "https://media.chatterblock.com/cache/77/94/779409f9b3959d491ee298581a119684.jpg"},
-    {name: "Salmon Crest", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6aFshQYf-HfYeBppmCFdl4WXoKZvjbt8o9igwhSbqxhzSIECaSQ&s"},
-    {name: "Salmon Creek", image: "https://www.jweekly.com/wp-content/uploads/2018/10/BAfireanniversary-rebuilding-crop-e1539620545679.jpg"},
-    {name: "Salmon Hill", image: "https://media.chatterblock.com/cache/77/94/779409f9b3959d491ee298581a119684.jpg"},
-    {name: "Salmon Crest", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6aFshQYf-HfYeBppmCFdl4WXoKZvjbt8o9igwhSbqxhzSIECaSQ&s"},
-    {name: "Salmon Creek", image: "https://www.jweekly.com/wp-content/uploads/2018/10/BAfireanniversary-rebuilding-crop-e1539620545679.jpg"},
-    {name: "Salmon Hill", image: "https://media.chatterblock.com/cache/77/94/779409f9b3959d491ee298581a119684.jpg"},
-    {name: "Salmon Crest", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6aFshQYf-HfYeBppmCFdl4WXoKZvjbt8o9igwhSbqxhzSIECaSQ&s"},
-    {name: "Salmon Creek", image: "https://www.jweekly.com/wp-content/uploads/2018/10/BAfireanniversary-rebuilding-crop-e1539620545679.jpg"},
-    {name: "Salmon Hill", image: "https://media.chatterblock.com/cache/77/94/779409f9b3959d491ee298581a119684.jpg"},
-    {name: "Salmon Crest", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6aFshQYf-HfYeBppmCFdl4WXoKZvjbt8o9igwhSbqxhzSIECaSQ&s"}
-];
+// Schema Setup
+
+var campgroundSchema = new mongoose.Schema({
+    name: String,
+    image: String,
+    description: String
+});
+var Campground = mongoose.model("campground", campgroundSchema);
+
+// Campground.create({
+//     name: "Salmon Hill", 
+//     image: "https://media.chatterblock.com/cache/77/94/779409f9b3959d491ee298581a119684.jpg",
+//     description:"Lorem Ipsum Dolor Bla Bla Bla Something Something"
+// }, function(err, campground){
+//         if(err){
+//             console.log(err);
+//         }
+//         else{
+//             console.log("Newly Created Campground");
+//             console.log(campground);
+//         }
+// });
+
+
 
 app.get("/", function(req,res){
     res.render("landing");
 });
 
+// INDEX - Show all campgrounds.
 app.get("/campgrounds", function(req,res){
-
-    res.render("campgrounds", {campgrounds: campgrounds});
+    Campground.find({}, function(err, allCampgrounds){
+        if(err){
+            console.log(err);
+        }
+        else{
+            res.render("index",{campgrounds:allCampgrounds});
+        }
+    
+    });
+    
 })
 
+// CREATE - Add new campground to DB.
 app.post("/campgrounds", function(req,res){
      var name = req.body.name;
      var image = req.body.image;
-     var newCampGround = {name:name, image:image};
-     campgrounds.push(newCampGround);
-     res.redirect("/campgrounds");
+     var desc = req.body.description;
+     var newCampGround = {name:name, image:image, description:desc};
+     // Create a new campground and save it to database.
+     Campground.create(newCampGround, function(err, newlyCreated){
+         if(err){
+             console.log(err);
+         }
+         else{
+             res.redirect("/campgrounds");
+         }
+     });
 });
 
+// NEW - Show form to create new campgrounds.
 app.get("/campgrounds/new", function(req, res) {
     res.render("new");    
 });
 
+// SHOW - Shows info about one campground
+app.get("/campgrounds/:id", function(req,res){
+    // Find campground based on id.
+    var id = req.params.id;
+    Campground.findById(id, function(err, foundCampground){
+       if(err){
+           console.log(err);
+       }
+       else{
+           res.render("show", {campground: foundCampground});
+       }
+       
+    });
+})
+
+
+
 app.listen(process.env.PORT, process.env.IP, function(){
    console.log("The YelpCamp server has started!"); 
 });
+
+
+// db.campgrounds.drop()
