@@ -27,20 +27,25 @@ router.post("/", function(req,res){
      var name = req.body.name;
      var image = req.body.image;
      var desc = req.body.description;
-     var newCampGround = {name:name, image:image, description:desc};
+     var author = {
+         id: req.user._id,
+         username: req.user.username
+     }
+     var newCampGround = {name:name, image:image, description:desc, author:author};
      // Create a new campground and save it to database.
      Campground.create(newCampGround, function(err, newlyCreated){
          if(err){
              console.log(err);
          }
          else{
+             
              res.redirect("/campgrounds");
          }
      });
 });
 
 // NEW - Show form to create new campgrounds.
-router.get("/new", function(req, res) {
+router.get("/new", isLoggedIn, function(req, res) {
     res.render("campgrounds/new");    
 });
 

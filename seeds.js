@@ -7,27 +7,42 @@ var data = [
     {
         name: "Camp1", 
         image: "https://lazykcamping.com/assets/Slide-3-Field.jpg",
-        description: loremIpsum
+        description: loremIpsum,
+        author: {
+            username: "Anon"
+        }
     },
     {
         name: "Camp2", 
         image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfPRRPSzCrQfgkgXSnuLw_PFevDwLU9ul1z1qQyDiHEVolOnQRig&s",
-        description: loremIpsum
+        description: loremIpsum,
+        author: {
+            username: "Anon"
+        }
     },
     {
         name: "Camp3", 
         image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT6SGRwTMGI8u2EG0YfCID2N3eVa8y0MnyFKSdy0A6Fw1Wmt5Pn&s",
-        description: loremIpsum
+        description: loremIpsum,
+        author: {
+            username: "Anon"
+        }
     },
     {
         name: "Camp4", 
         image: "https://i1.wp.com/visitmckenzieriver.com/oregon/wp-content/uploads/2015/06/paradise_campground.jpg?resize=640%2C420",
-        description: loremIpsum
+        description: loremIpsum,
+        author: {
+            username: "Anon"
+        }
     },
     {
         name: "Camp5", 
         image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSb2YUK_iZAuRLDxGJkb-ze_JKxBQHqw92SPGbMtOfqGtXshAeABw&s",
-        description: loremIpsum
+        description: loremIpsum,
+        author: {
+            username: "Anon"
+        }
     }
 ];
 
@@ -47,7 +62,9 @@ function seedDB(){
                        // Create a comment
                        var testComment = {
                            text: "Test Comment!",
-                           author: "Anon"
+                           author: {
+                               username: "Anon"
+                           }
                        }
                        Comment.create(testComment, function(err, comment){
                            if(err){
