@@ -28,7 +28,7 @@ router.get("/", function(req,res){
 });
 
 // CREATE - Add new campground to DB.
-router.post("/", function(req,res){
+router.post("/", isLoggedIn, function(req,res){
      var name = req.body.name;
      var image = req.body.image;
      var desc = req.body.description;
@@ -76,6 +76,7 @@ router.get("/:id/edit", checkCampgroundOwnership, function(req,res){
    var id = req.params.id;
    Campground.findById(id, function(err, foundCampground){
       if(err){
+          req.flash("error", "Error occurred while editting.");
           console.log(err);
           res.redirect("/campgrounds");
       } else {
@@ -90,8 +91,11 @@ router.put("/:id",checkCampgroundOwnership, function(req,res){
    // Find and update correct campground
    Campground.findByIdAndUpdate(req.params.id, req.body.campground, function(err, update){
       if(err){
+          req.flash("error", err.message);
+          console.log(err);
           res.redirect("/campgrounds");
       } else {
+          req.flash("success", "Campground updated successfully!");
           res.redirect("/campgrounds/" + req.params.id);
       }
    });
@@ -102,9 +106,11 @@ router.put("/:id",checkCampgroundOwnership, function(req,res){
 router.delete("/:id",checkCampgroundOwnership, function(req,res){
    Campground.findByIdAndRemove(req.params.id, function(err){
        if(err){
+           req.flash("error", err.message);
            console.log(err);
            res.redirect("/campgrounds");
        } else {
+           req.flash("success", "Campground deleted successfully!");
            res.redirect("/campgrounds");
        }
    })

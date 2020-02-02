@@ -1,8 +1,13 @@
-var express = require("express");
+ var express = require("express");
 var router = express.Router({mergeParams:true});
 
 var Campground = require("../models/campground");
 var Comment = require("../models/comment");
+
+var middleware = require("../middleware");
+
+var checkCommentOwnership = middleware.checkCommentOwnership;
+var isLoggedIn = middleware.isLoggedIn;
 
 // ===================================================
 // COMMENTS ROUTES
@@ -50,6 +55,7 @@ router.post("/", isLoggedIn, function(req,res){
 router.get("/:comment_id/edit", checkCommentOwnership, function(req,res){
      Comment.findById(req.params.comment_id, function(err, foundComment){
         if(err){
+            req.flash("error", "Failed to edit comment.");
             res.redirect("back");
         } else{
             res.render("comments/edit", {campgroundId:req.params.id, comment: foundComment});        
@@ -66,6 +72,7 @@ router.put("/:comment_id", checkCommentOwnership, function(req,res){
            console.log(err);
            res.redirect("back");
        } else {
+           req.flash("success", "Comment updated successfully!");
            res.redirect("/campgrounds/"+req.params.id);
        }
    })
@@ -79,6 +86,7 @@ router.delete("/:comment_id", checkCommentOwnership, function(req,res){
         if(err){
             console.log(err);
         } else {
+            req.flash("success", "Comment deleted.");
             res.redirect("back");
         }
     })
