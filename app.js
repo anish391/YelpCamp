@@ -5,6 +5,8 @@ var mongoose = require("mongoose");
 var passport = require("passport");
 var LocalStrategy = require("passport-local");
 var methodOverride = require("method-override");
+var flash = require('connect-flash');
+var session = require('express-session');
 
 var User = require("./models/user");
 var seedDB = require("./seeds")
@@ -26,11 +28,12 @@ app.use(methodOverride("_method"));
 // Passport Configuration
 // ===================================================
 
-app.use(require("express-session")({
+app.use(session({
     secret: "Keyboard cat",
     resave: false,
     saveUninitialized: false
 })); 
+app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -40,6 +43,8 @@ passport.deserializeUser(User.deserializeUser());
 
 app.use(function(req, res, next){
    res.locals.currentUser = req.user;
+   res.locals.error = req.flash("error");
+   res.locals.success = req.flash("success");
    next();
 });
 
