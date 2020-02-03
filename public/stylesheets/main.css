@@ -13,3 +13,9 @@
 #deleteForm {
     display: inline;
 }
+
+.buttonContainer a{
+    display: inline-block;
+    margin-right:10px;
+}
+
