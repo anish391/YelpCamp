@@ -15,7 +15,7 @@ var authRoutes = require("./routes/index")
 var campgroundRoutes = require("./routes/campgrounds")
 var commentRoutes = require("./routes/comments");
 
-var url = "mongodb+srv://userAnish:gt-I9300@cluster0-xbc5l.mongodb.net/test?retryWrites=true&w=majority"; 
+var url = process.env.DATABASEURL || "mongodb://localhost/yelp_camp"; 
 var mongooseObject = {
 	useNewUrlParser: true,
 	useCreateIndex: true
