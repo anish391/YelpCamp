@@ -82,9 +82,10 @@ function isLoggedIn(req, res, next){
     res.redirect("/login");
 }
 
+var port = process.env.PORT || 3000;
 
-app.listen(process.env.PORT, process.env.IP, function(){
-   console.log("The YelpCamp server has started!"); 
+app.listen(port, process.env.IP, function(){
+   console.log("The YelpCamp server has started on port +"port+"!"); 
 });
 
 
