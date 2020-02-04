@@ -85,7 +85,7 @@ function isLoggedIn(req, res, next){
 var port = process.env.PORT || 3000;
 
 app.listen(port, process.env.IP, function(){
-   console.log("The YelpCamp server has started on port +"port+"!"); 
+   console.log("The YelpCamp server has started on port "+port+"!"); 
 });
 
 
